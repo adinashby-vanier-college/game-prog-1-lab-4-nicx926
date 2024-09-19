@@ -22,7 +22,11 @@ public class Lobster extends Actor
      */
     public void act()
     {
+        eat();
         moveAround();
+        if (isGameOver()) {
+            transitionToGameOverWorld();
+        }
     }
 
     /**
@@ -37,5 +41,47 @@ public class Lobster extends Actor
         if (isAtEdge()) {
             turn(180);
         }
+    }
+
+    /**
+     * 
+     */
+    public void eat()
+    {
+        Actor crab = getOneIntersectingObject(Crab.class);
+        if (crab != null) {
+            World world = getWorld();
+            world.removeObject(crab);
+            Greenfoot.playSound("mixkit-arcade-game-over-3068.wav");
+        }
+        Actor worm = getOneIntersectingObject(Worm.class);
+        if (worm != null) {
+            World world = getWorld();
+            world.removeObject(worm);
+            world.addObject( new  Lobster(), getX(), getY());
+        }
+    }
+
+    /**
+     * 
+     */
+    public boolean isGameOver()
+    {
+        World world = getWorld();
+        if (world.getObjects(Crab.class).isEmpty()) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    /**
+     * 
+     */
+    public void transitionToGameOverWorld()
+    {
+        World GameOverWorld =  new  GameOverWorld();
+        Greenfoot.setWorld(GameOverWorld);
     }
 }
